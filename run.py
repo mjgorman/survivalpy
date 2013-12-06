@@ -2,7 +2,7 @@ __author__ = 'Leo'
 
 from time import sleep
 
-from event import GameEnd, FireWentOut
+from event import GameEnd, FireWentOut, CharacterDeath
 from character import Soldier, Dog, Psychiatrist, Scientist
 
 class Game(object):
@@ -25,6 +25,7 @@ class Game(object):
         if self.fire <= 0:
             return (FireWentOut(), GameEnd(False))
 
+        events = []
         for character in self.characters:
             character.update()
             if character.is_alive:
@@ -32,8 +33,10 @@ class Game(object):
                     self.turn_action_points += 1
                 self.food_rations -= 1
             else:
+                events.append(CharacterDeath(character))
                 del self.skill_commands[character.skill_command]
         self.characters = [c for c in self.characters if c.is_alive]
+        return events
 
 def recount_events(events):
     if events is not None:
@@ -66,6 +69,7 @@ def main():
         print ("You have %d vaccines" % game.vaccines)
         print ("You have %d action points" % game.turn_action_points)
 
+        print ("")
         cmd = raw_input('What would you like to do? ').lower().split(' ')
         print ("")
         sleep(1)

@@ -1,5 +1,7 @@
 __author__ = 'Leo'
 
+from time import sleep
+
 from event import GameEnd, FireWentOut
 from character import Soldier, Dog, Psychiatrist, Scientist
 
@@ -57,6 +59,7 @@ def main():
 
         cmd = raw_input('What would you like to do? ').lower().split(' ')
         print ("")
+        sleep(1)
         if cmd[0] in game.skill_commands and game.turn_action_points > 0:
             events = game.skill_commands[cmd[0]]()
             if events is not None:
@@ -73,6 +76,8 @@ def main():
                     break
         else:
             print ("You may use character skills, 'fire', or 'soothe <name>'")
+
+        sleep(1)
 
         if game.turn_action_points == 0:
             events = game.update()

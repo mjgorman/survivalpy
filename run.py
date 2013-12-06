@@ -27,15 +27,15 @@ class Game(object):
 
         events = []
         for character in self.characters:
-            character.update()
-            if character.is_alive:
-                if not character.is_infected:
-                    self.turn_action_points += 1
-                self.food_rations -= 1
-            else:
-                events.append(CharacterDeath(character))
-                del self.skill_commands[character.skill_command]
+            cevt = character.update()
+            if cevt is not None:
+                for e in cevt:
+                    events.append(e)
+
         self.characters = [c for c in self.characters if c.is_alive]
+        if len(self.characters) == 0:
+            events.append(GameEnd(False))
+            
         return events
 
 def recount_events(events):

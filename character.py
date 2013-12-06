@@ -3,7 +3,7 @@ __author__ = 'Leo'
 from random import randint
 from util import roll
 from event import (FoodHuntResult, BulletsUsed, VaccinesMade,
-    CharacterSoothedResult, CharacterCureResult)
+    CharacterSoothedResult, CharacterCureResult, CharacterDeath)
 
 class Character(object):
     def __init__(self, name, game, skill_command):
@@ -34,6 +34,18 @@ class Character(object):
 
         if self.insanity == 5:
             self.is_alive = False
+
+        if self.game.food_rations > 0:
+            self.game.food_rations -= 1
+        else:
+            self.is_alive = False
+
+        if self.is_alive:
+            if not self.is_infected:
+                self.game.turn_action_points += 1
+        else:
+            del self.game.skill_commands[self.skill_command]
+            return (CharacterDeath(self),)
 
     def soothe(self):
         self.game.turn_action_points -= 1

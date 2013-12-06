@@ -62,3 +62,27 @@ class CharacterDeath(Event):
 
     def __repr__(self):
         return "%s has died." % self.character.name
+
+class CharacterSoothedResult(Event):
+    def __init__(self, character, success):
+        super(CharacterSoothedResult, self).__init__(8, 'character soothed')
+        self.character = character
+        self.success = success
+
+    def __repr__(self):
+        if self.success:
+            return "%s has calmed down." % self.character.name
+        else:
+            return "%s refuses to calm down." % self.character.name
+
+class CharacterCureResult(Event):
+    def __init__(self, character, success):
+        super(CharacterCureResult, self).__init__(9, 'character cured')
+        self.character = character
+        self.success = success
+
+    def __repr__(self):
+        if self.success:
+            return "%s has been cured." % self.character.name
+        else:
+            return "The cure didn't work on %s" % self.character.name

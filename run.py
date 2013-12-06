@@ -35,6 +35,13 @@ class Game(object):
                 del self.skill_commands[character.skill_command]
         self.characters = [c for c in self.characters if c.is_alive]
 
+def recount_events(events):
+    if events is not None:
+        for e in events:
+            print e
+            if isinstance(e, GameEnd):
+                exit(0)
+
 def main():
     game = Game()
     soldier = Soldier(game)
@@ -46,6 +53,7 @@ def main():
         print ("")
         print ("============================================")
         print ("Day %d" % game.days)
+        print ("============================================")
         for character in game.characters:
             print ("%s (INS: %d, INF: %s)" % (character.name,
                                               character.insanity,
@@ -63,9 +71,7 @@ def main():
         sleep(1)
         if cmd[0] in game.skill_commands and game.turn_action_points > 0:
             events = game.skill_commands[cmd[0]]()
-            if events is not None:
-                for e in events:
-                    print e
+            recount_events(events)
         elif cmd[0] == 'fire' and game.turn_action_points > 0:
             game.fire = 3
             print ("You put some wood in the fire.")
@@ -73,13 +79,15 @@ def main():
                       game.turn_action_points > 0):
             for c in game.characters:
                 if c.name.lower() == cmd[1]:
-                    c.soothe()
+                    events = c.soothe()
+                    recount_events(events)
                     break
         elif (cmd[0] == 'cure' and len(cmd[1]) > 0 and
                       game.turn_action_points > 0 and game.vaccines > 0):
             for c in game.characters:
                 if c.name.lower() == cmd[1]:
-                    c.cure()
+                    events = c.cure()
+                    recount_events(events)
                     break
         else:
             print ("You may use character skills, 'fire', 'soothe <name>', "
@@ -89,11 +97,7 @@ def main():
 
         if game.turn_action_points == 0:
             events = game.update()
-            if events is not None:
-                for e in events:
-                    print e
-                    if isinstance(e, GameEnd):
-                        exit(0)
+            recount_events(events)
 
 if __name__ == '__main__':
     main()

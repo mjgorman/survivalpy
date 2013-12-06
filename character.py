@@ -2,7 +2,8 @@ __author__ = 'Leo'
 
 from random import randint
 from util import roll
-from event import FoodHuntResult, BulletsUsed, VaccinesMade
+from event import (FoodHuntResult, BulletsUsed, VaccinesMade,
+    CharacterSoothedResult, CharacterCureResult)
 
 class Character(object):
     def __init__(self, name, game, skill_command):
@@ -38,11 +39,15 @@ class Character(object):
         self.game.turn_action_points -= 1
         if roll(90):
             self.insanity -= 1
+            return (CharacterSoothedResult(self, True),)
+        else:
+            return (CharacterSoothedResult(self, False),)
 
     def cure(self):
         self.game.turn_action_points -= 1
         self.game.vaccines -= 1
         self.is_infected = False
+        return (CharacterCureResult(self, True),)
 
     def skill(self):
         raise Exception("skill called on Character base class!")

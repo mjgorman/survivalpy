@@ -35,7 +35,7 @@ class Game(object):
         self.characters = [c for c in self.characters if c.is_alive]
         if len(self.characters) == 0:
             events.append(GameEnd(False))
-            
+
         return events
 
 def recount_events(events):
@@ -44,6 +44,7 @@ def recount_events(events):
             print e
             if isinstance(e, GameEnd):
                 exit(0)
+            sleep(0.5)
 
 def main():
     game = Game()
@@ -70,33 +71,34 @@ def main():
         print ("You have %d action points" % game.turn_action_points)
 
         print ("")
-        cmd = raw_input('What would you like to do? ').lower().split(' ')
-        print ("")
-        sleep(1)
-        if cmd[0] in game.skill_commands and game.turn_action_points > 0:
-            events = game.skill_commands[cmd[0]]()
-            recount_events(events)
-        elif cmd[0] == 'fire' and game.turn_action_points > 0:
-            game.fire = 3
-            game.turn_action_points -= 1
-            print ("You put some wood in the fire.")
-        elif (cmd[0] == 'soothe' and len(cmd[1]) > 0 and
-                      game.turn_action_points > 0):
-            for c in game.characters:
-                if c.name.lower() == cmd[1]:
-                    events = c.soothe()
-                    recount_events(events)
-                    break
-        elif (cmd[0] == 'cure' and len(cmd[1]) > 0 and
-                      game.turn_action_points > 0 and game.vaccines > 0):
-            for c in game.characters:
-                if c.name.lower() == cmd[1]:
-                    events = c.cure()
-                    recount_events(events)
-                    break
-        else:
-            print ("You may use character skills, 'fire', 'soothe <name>', "
-                   "'cure <name>'")
+        if game.turn_action_points > 0:
+            cmd = raw_input('What would you like to do? ').lower().split(' ')
+            print ("")
+            sleep(0.5)
+            if cmd[0] in game.skill_commands and game.turn_action_points > 0:
+                events = game.skill_commands[cmd[0]]()
+                recount_events(events)
+            elif cmd[0] == 'fire' and game.turn_action_points > 0:
+                game.fire = 3
+                game.turn_action_points -= 1
+                print ("You put some wood in the fire.")
+            elif (cmd[0] == 'soothe' and len(cmd[1]) > 0 and
+                          game.turn_action_points > 0):
+                for c in game.characters:
+                    if c.name.lower() == cmd[1]:
+                        events = c.soothe()
+                        recount_events(events)
+                        break
+            elif (cmd[0] == 'cure' and len(cmd[1]) > 0 and
+                          game.turn_action_points > 0 and game.vaccines > 0):
+                for c in game.characters:
+                    if c.name.lower() == cmd[1]:
+                        events = c.cure()
+                        recount_events(events)
+                        break
+            else:
+                print ("You may use character skills, 'fire', "
+                       "'soothe <name>', 'cure <name>'")
 
         sleep(1)
 

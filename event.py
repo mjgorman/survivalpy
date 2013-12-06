@@ -86,3 +86,12 @@ class CharacterCureResult(Event):
             return "%s has been cured." % self.character.name
         else:
             return "The cure didn't work on %s" % self.character.name
+
+class MonsterAttack(Event):
+    def __init__(self, food_stolen):
+        super(MonsterAttack, self).__init__(10, 'monster attack')
+        self.food_stolen = food_stolen
+
+    def __repr__(self):
+        return ("You were attacked by monsters. You lost %d food rations" %
+               self.food_stolen)

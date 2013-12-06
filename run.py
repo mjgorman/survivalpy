@@ -1,9 +1,11 @@
 __author__ = 'Leo'
 
 from time import sleep
+from random import randint
 
-from event import GameEnd, FireWentOut, CharacterDeath
+from event import GameEnd, FireWentOut, BulletsUsed, MonsterAttack
 from character import Soldier, Dog, Psychiatrist, Scientist
+from util import roll
 
 class Game(object):
     def __init__(self):
@@ -35,6 +37,17 @@ class Game(object):
         self.characters = [c for c in self.characters if c.is_alive]
         if len(self.characters) == 0:
             events.append(GameEnd(False))
+
+        if roll(30 - self.days):
+            food_stolen = randint(1, min(8, self.food_rations))
+            self.food_rations -= food_stolen
+            events.append(MonsterAttack(food_stolen))
+            if self.bullets > 0:
+                bullets_used = randint(1, min(8, self.bullets))
+                self.bullets -= bullets_used
+                events.append(BulletsUsed(bullets_used))
+            else:
+                events.append(GameEnd(False))
 
         return events
 
@@ -105,6 +118,10 @@ def main():
         if game.turn_action_points == 0:
             events = game.update()
             recount_events(events)
+            print ("")
+            sleep(1)
+            print ("A new day dawns...")
+            sleep(1)
 
 if __name__ == '__main__':
     main()

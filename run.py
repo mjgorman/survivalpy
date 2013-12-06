@@ -14,7 +14,7 @@ class Game(object):
         self.characters = []
         self.skill_commands = {}
         self.turn_action_points = 0
-        self.fire = 5
+        self.fire = 0
 
     def update(self):
         self.days -= 1
@@ -22,7 +22,7 @@ class Game(object):
             return (GameEnd(True),)
 
         self.fire -= 1
-        if self.fire == 0:
+        if self.fire <= 0:
             return (FireWentOut(), GameEnd(False))
 
         for character in self.characters:
@@ -84,6 +84,8 @@ def main():
             if events is not None:
                 for e in events:
                     print e
+                    if isinstance(e, GameEnd):
+                        exit(0)
 
 if __name__ == '__main__':
     main()

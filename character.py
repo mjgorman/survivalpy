@@ -91,4 +91,5 @@ class Scientist(Character):
     def skill(self):
         self.game.turn_action_points -= 1
         vaccines_added = randint(1, 3)
+        self.game.vaccines += vaccines_added
         return (VaccinesMade(vaccines_added),)

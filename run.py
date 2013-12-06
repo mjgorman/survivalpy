@@ -58,10 +58,10 @@ def main():
         print ("Day %d" % game.days)
         print ("============================================")
         for character in game.characters:
-            print ("%s (INS: %d, INF: %s)" % (character.name,
+            print ("%s (INS: %d, INF: %s) ['%s']" % (character.name,
                                               character.insanity,
-                                              character.is_infected))
-            print ("\tSkill: '%s'" % character.skill_command)
+                                              character.is_infected,
+                                              character.skill_command))
         print ("")
         print ("Fire strength: %d" % game.fire)
         print ("You have %d food rations" % game.food_rations)

@@ -61,7 +61,7 @@ def main():
             print ("%s (INS: %d, INF: %s)" % (character.name,
                                               character.insanity,
                                               character.is_infected))
-            print ("\tSkill: %s" % character.skill_command)
+            print ("\tSkill: '%s'" % character.skill_command)
         print ("")
         print ("Fire strength: %d" % game.fire)
         print ("You have %d food rations" % game.food_rations)

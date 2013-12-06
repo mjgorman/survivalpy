@@ -30,7 +30,7 @@ class Character(object):
         else:
             if roll(25):
                 self.is_infected = True
-                self.days_infected = 1
+                self.days_infected = 0
 
         if self.insanity == 5:
             self.is_alive = False

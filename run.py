@@ -74,6 +74,7 @@ def main():
             recount_events(events)
         elif cmd[0] == 'fire' and game.turn_action_points > 0:
             game.fire = 3
+            game.turn_action_points -= 1
             print ("You put some wood in the fire.")
         elif (cmd[0] == 'soothe' and len(cmd[1]) > 0 and
                       game.turn_action_points > 0):

@@ -55,6 +55,7 @@ def main():
         print ("Fire strength: %d" % game.fire)
         print ("You have %d food rations" % game.food_rations)
         print ("You have %d bullets" % game.bullets)
+        print ("You have %d vaccines" % game.vaccines)
         print ("You have %d action points" % game.turn_action_points)
 
         cmd = raw_input('What would you like to do? ').lower().split(' ')
@@ -69,13 +70,20 @@ def main():
             game.fire = 3
             print ("You put some wood in the fire.")
         elif (cmd[0] == 'soothe' and len(cmd[1]) > 0 and
-                game.turn_action_points > 0):
+                      game.turn_action_points > 0):
             for c in game.characters:
                 if c.name.lower() == cmd[1]:
                     c.soothe()
                     break
+        elif (cmd[0] == 'cure' and len(cmd[1]) > 0 and
+                      game.turn_action_points > 0 and game.vaccines > 0):
+            for c in game.characters:
+                if c.name.lower() == cmd[1]:
+                    c.cure()
+                    break
         else:
-            print ("You may use character skills, 'fire', or 'soothe <name>'")
+            print ("You may use character skills, 'fire', 'soothe <name>', "
+                   "'cure <name>'")
 
         sleep(1)
 

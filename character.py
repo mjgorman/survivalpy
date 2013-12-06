@@ -39,6 +39,11 @@ class Character(object):
         if roll(90):
             self.insanity -= 1
 
+    def cure(self):
+        self.game.turn_action_points -= 1
+        self.game.vaccines -= 1
+        self.is_infected = False
+
     def skill(self):
         raise Exception("skill called on Character base class!")
 

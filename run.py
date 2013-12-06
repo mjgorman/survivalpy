@@ -19,20 +19,22 @@ class Game(object):
         self.fire = 0
 
     def update(self):
+        events = []
         self.days -= 1
         if self.days == 0:
-            return (GameEnd(True),)
+            events.append(GameEnd(True))
+            return events
 
         self.fire -= 1
         if self.fire <= 0:
-            return (FireWentOut(), GameEnd(False))
+            events.append(FireWentOut())
+            events.append(GameEnd(False))
+            return events
 
-        events = []
         for character in self.characters:
             cevt = character.update()
-            if cevt is not None:
-                for e in cevt:
-                    events.append(e)
+            for e in cevt:
+                events.append(e)
 
         self.characters = [c for c in self.characters if c.is_alive]
         if len(self.characters) == 0:

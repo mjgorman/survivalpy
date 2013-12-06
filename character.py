@@ -3,7 +3,8 @@ __author__ = 'Leo'
 from random import randint
 from util import roll
 from event import (FoodHuntResult, BulletsUsed, VaccinesMade,
-    CharacterSoothedResult, CharacterCureResult, CharacterDeath)
+    CharacterSoothedResult, CharacterCureResult, CharacterDeath,
+    CharacterInfected)
 
 class Character(object):
     def __init__(self, name, game, skill_command):
@@ -20,6 +21,7 @@ class Character(object):
         self.game.turn_action_points += 1
 
     def update(self):
+        events = []
         if roll(25):
             self.insanity += 1
 
@@ -31,6 +33,7 @@ class Character(object):
             if roll(25):
                 self.is_infected = True
                 self.days_infected = 0
+                events.append(CharacterInfected(self))
 
         if self.insanity == 5:
             self.is_alive = False
@@ -45,7 +48,9 @@ class Character(object):
                 self.game.turn_action_points += 1
         else:
             del self.game.skill_commands[self.skill_command]
-            return (CharacterDeath(self),)
+            events.append(CharacterDeath(self))
+
+        return events
 
     def soothe(self):
         self.game.turn_action_points -= 1

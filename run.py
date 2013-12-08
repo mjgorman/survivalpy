@@ -3,13 +3,15 @@ __author__ = 'Leo'
 from time import sleep
 from random import randint
 
-from event import GameEnd, FireWentOut, BulletsUsed, MonsterAttack
+from event import (GameEnd, FireWentOut, BulletsUsed, MonsterAttack,
+                   RadioRepairResult, RadioRepairProgress)
 from character import Soldier, Dog, Psychiatrist, Scientist
 from util import roll
 
 class Game(object):
     def __init__(self):
         self.days = 30
+        self.radio_repair_progress = 0
         self.bullets = 0
         self.food_rations = 0
         self.vaccines = 0
@@ -24,7 +26,12 @@ class Game(object):
         events = []
         self.days -= 1
         if self.days == 0:
-            events.append(GameEnd(True))
+            if self.radio_repair_progress >= 20:
+                events.append(RadioRepairResult(True))
+                events.append(GameEnd(True))
+            else:
+                events.append(RadioRepairResult(False))
+                events.append(GameEnd(False))
             return events
 
         self.fire -= 1
@@ -82,6 +89,7 @@ def main():
                                               character.skill_command))
         print ("")
         print ("Fire strength: %d" % game.fire)
+        print ("Radio repair: %d%%" % game.radio_repair_progress)
         print ("You have %d food rations" % game.food_rations)
         print ("You have %d bullets" % game.bullets)
         print ("You have %d vaccines" % game.vaccines)
@@ -113,8 +121,12 @@ def main():
                         events = c.cure()
                         recount_events(events)
                         break
+            elif cmd[0] == 'radio' and game.turn_action_points > 0:
+                game.radio_repair_progress += 1
+                game.turn_action_points -= 1
+                events.append(RadioRepairProgress())
             else:
-                print ("You may use character skills, 'fire', "
+                print ("You may use character skills, 'fire', 'radio', "
                        "'soothe <name>', 'cure <name>'")
 
         sleep(1)

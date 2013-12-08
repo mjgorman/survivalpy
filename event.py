@@ -95,3 +95,18 @@ class MonsterAttack(Event):
     def __repr__(self):
         return ("You were attacked by monsters. You lost %d food rations" %
                self.food_stolen)
+
+class RadioRepairProgress(Event):
+    def __init__(self):
+        super(RadioRepairProgress, self).__init__(11, 'radio repair progress')
+
+    def __repr__(self):
+        return "Radio repair in progress..."
+
+class RadioRepairResult(Event):
+    def __init__(self, result):
+        super(RadioRepairResult, self).__init__(12, 'radio repair result')
+        self.result = result
+
+    def __repr__(self):
+        return "Radio repaired: %s" % self.result

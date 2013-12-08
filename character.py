@@ -30,10 +30,11 @@ class Character(object):
             if self.days_infected == 3:
                 self.is_alive = False
         else:
-            if roll(25):
+            if roll(25) and not self.game.infected_someone_today:
                 self.is_infected = True
                 self.days_infected = 0
                 events.append(CharacterInfected(self))
+                self.game.infected_someone_today = True
 
         if self.insanity == 5:
             self.is_alive = False

@@ -17,8 +17,10 @@ class Game(object):
         self.skill_commands = {}
         self.turn_action_points = 0
         self.fire = 0
+        self.infected_someone_today = False
 
     def update(self):
+        self.infected_someone_today = False
         events = []
         self.days -= 1
         if self.days == 0:

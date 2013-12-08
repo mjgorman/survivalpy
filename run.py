@@ -124,7 +124,7 @@ def main():
             elif cmd[0] == 'radio' and game.turn_action_points > 0:
                 game.radio_repair_progress += 1
                 game.turn_action_points -= 1
-                events.append(RadioRepairProgress())
+                recount_events([RadioRepairProgress()])
             else:
                 print ("You may use character skills, 'fire', 'radio', "
                        "'soothe <name>', 'cure <name>'")

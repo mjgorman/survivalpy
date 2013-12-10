@@ -45,7 +45,8 @@ class Character(object):
             if not self.is_infected:
                 self.game.turn_action_points += 1
         else:
-            del self.game.skill_commands[self.skill_command]
+            for s in self.skills:
+                del self.game.skill_commands[s]
             events.append(CharacterDeath(self))
 
         return events

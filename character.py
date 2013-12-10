@@ -22,7 +22,7 @@ class Character(object):
 
     def update(self):
         events = []
-        if roll(25):
+        if roll(self.game.insanity_rate):
             self.insanity += 1
 
         if self.is_infected:

@@ -20,6 +20,7 @@ class Game(object):
         self.turn_action_points = 0
         self.fire = 0
         self.infected_someone_today = False
+        self.insanity_rate = 50
 
     def update(self):
         self.infected_someone_today = False

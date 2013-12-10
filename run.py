@@ -6,7 +6,7 @@ from random import randint
 from event import (GameEnd, FireWentOut, BulletsUsed, MonsterAttack,
                    RadioRepairResult, RadioRepairProgress)
 from character import Soldier, Dog, Psychiatrist, Scientist
-from util import roll
+from util import roll, has_instance
 
 class Game(object):
     def __init__(self):
@@ -53,7 +53,7 @@ class Game(object):
             food_stolen = randint(1, min(8, self.food_rations))
             self.food_rations -= food_stolen
             events.append(MonsterAttack(food_stolen))
-            if self.bullets > 0:
+            if self.bullets > 0 and has_instance(self.characters, Soldier):
                 bullets_used = randint(1, min(8, self.bullets))
                 self.bullets -= bullets_used
                 events.append(BulletsUsed(bullets_used))

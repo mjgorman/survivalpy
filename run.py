@@ -21,6 +21,7 @@ class Game(object):
         self.fire = 0
         self.infected_someone_today = False
         self.insanity_rate = 50
+        self.infection_rate = 10
 
     def update(self):
         self.infected_someone_today = False

@@ -7,7 +7,7 @@ def roll(cutoff):
     return roll < cutoff
 
 def has_instance(collection, cls):
-	for i in collection:
-		if instanceof(i, cls):
-			return True
-	return False
+    for i in collection:
+        if instanceof(i, cls):
+            return True
+    return False

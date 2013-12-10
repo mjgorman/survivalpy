@@ -8,6 +8,6 @@ def roll(cutoff):
 
 def has_instance(collection, cls):
     for i in collection:
-        if instanceof(i, cls):
+        if isinstance(i, cls):
             return True
     return False

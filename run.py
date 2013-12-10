@@ -85,10 +85,9 @@ def main():
         print ("Day %d" % game.days)
         print ("============================================")
         for character in game.characters:
-            print ("%s (INS: %d, INF: %s) ['%s']" % (character.name,
-                                              character.insanity,
-                                              character.is_infected,
-                                              character.skill_command))
+            print ("%s (INS: %d, INF: %s) ['%s']" % 
+                (character.name, character.insanity, character.is_infected,
+                character.skill_command))
         print ("")
         print ("Fire strength: %d" % game.fire)
         print ("Radio repair: %d%%" % game.radio_repair_progress)

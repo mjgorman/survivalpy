@@ -4,25 +4,21 @@ from random import randint
 from util import roll
 from event import (FoodHuntResult, BulletsUsed, VaccinesMade,
     CharacterSoothedResult, CharacterCureResult, CharacterDeath,
-    CharacterInfected)
+    CharacterInfected, BulletsMade, TherapyImpossible)
 
 class Character(object):
-    def __init__(self, name, game, skill_command):
+    def __init__(self, name, game):
         self.game = game
         self.name = name
         self.insanity = 0
         self.days_infected = 0
         self.is_infected = False
         self.is_alive = True
-        self.skill_command = skill_command
-        self.game.skill_commands[skill_command] = self.skill
-        self.game.food_rations += 2
-        self.game.characters.append(self)
-        self.game.turn_action_points += 1
+        self.skills = {}
 
     def update(self):
         events = []
-        if roll(25):
+        if roll(self.game.insanity_rate):
             self.insanity += 1
 
         if self.is_infected:
@@ -30,7 +26,8 @@ class Character(object):
             if self.days_infected == 3:
                 self.is_alive = False
         else:
-            if roll(10) and not self.game.infected_someone_today:
+            if (roll(self.game.infection_rate) and not 
+                    self.game.infected_someone_today):
                 self.is_infected = True
                 self.days_infected = 0
                 events.append(CharacterInfected(self))
@@ -67,15 +64,14 @@ class Character(object):
         self.is_infected = False
         return (CharacterCureResult(self, True),)
 
-    def skill(self):
-        raise Exception("skill called on Character base class!")
-
 class Soldier(Character):
     def __init__(self, game):
-        super(Soldier, self).__init__("Soldier", game, 'hunt')
+        super(Soldier, self).__init__("Soldier", game)
         self.game.bullets += 20
+        self.skills['hunt'] = self.hunt
+        self.skills['bullets'] = self.bullets
 
-    def skill(self):
+    def hunt(self):
         self.game.turn_action_points -= 1
         added_food = 0
         bullets_used = 0
@@ -86,11 +82,20 @@ class Soldier(Character):
             self.game.bullets -= bullets_used
         return (FoodHuntResult(added_food), BulletsUsed(bullets_used))
 
+    def bullets(self):
+        self.game.turn_action_points -= 1
+        added_bullets = 0
+        if roll(75):
+            added_bullets = randint(1, 10)
+            self.game.bullets += added_bullets
+        return (BulletsMade(added_bullets),)
+
 class Dog(Character):
     def __init__(self, game):
-        super(Dog, self).__init__("Fido", game, 'scavenge')
+        super(Dog, self).__init__("Fido", game)
+        self.skills['scavenge'] = self.scavenge
 
-    def skill(self):
+    def scavenge(self):
         self.game.turn_action_points -= 1
         added_food = 0
         if roll(60):
@@ -100,18 +105,23 @@ class Dog(Character):
 
 class Psychiatrist(Character):
     def __init__(self, game):
-        super(Psychiatrist, self).__init__("Psychiatrist", game, 'therapy')
+        super(Psychiatrist, self).__init__("Psychiatrist", game)
+        self.skills['therapy'] = self.therapy
 
-    def skill(self):
-        for i in xrange(self.game.turn_action_points):
-            self.game.characters[i].insanity = 0
-            self.game.turn_action_points -= 1
+    def therapy(self):
+        if self.game.turn_action_points == self.game.characters:
+            self.game.turn_action_points = 0
+            for c in self.game.characters:
+                c.insanity = 0
+        else:
+            return (TherapyImpossible(),)
 
 class Scientist(Character):
     def __init__(self, game):
-        super(Scientist, self).__init__("Scientist", game, 'vaccines')
+        super(Scientist, self).__init__("Scientist", game)
+        self.skills['vaccines'] = self.vaccines
 
-    def skill(self):
+    def vaccines(self):
         self.game.turn_action_points -= 1
         vaccines_added = randint(1, 3)
         self.game.vaccines += vaccines_added

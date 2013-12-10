@@ -6,7 +6,7 @@ from random import randint
 from event import (GameEnd, FireWentOut, BulletsUsed, MonsterAttack,
                    RadioRepairResult, RadioRepairProgress)
 from character import Soldier, Dog, Psychiatrist, Scientist
-from util import roll
+from util import roll, has_instance
 
 class Game(object):
     def __init__(self):
@@ -20,13 +20,15 @@ class Game(object):
         self.turn_action_points = 0
         self.fire = 0
         self.infected_someone_today = False
+        self.insanity_rate = 50
+        self.infection_rate = 10
 
     def update(self):
         self.infected_someone_today = False
         events = []
         self.days -= 1
         if self.days == 0:
-            if self.radio_repair_progress >= 20:
+            if self.radio_repair_progress >= 50:
                 events.append(RadioRepairResult(True))
                 events.append(GameEnd(True))
             else:
@@ -53,7 +55,7 @@ class Game(object):
             food_stolen = randint(1, min(8, self.food_rations))
             self.food_rations -= food_stolen
             events.append(MonsterAttack(food_stolen))
-            if self.bullets > 0:
+            if self.bullets > 0 and has_instance(self.characters, Soldier):
                 bullets_used = randint(1, min(8, self.bullets))
                 self.bullets -= bullets_used
                 events.append(BulletsUsed(bullets_used))
@@ -61,6 +63,13 @@ class Game(object):
                 events.append(GameEnd(False))
 
         return events
+
+    def add_character(self, character):
+        self.food_rations += 2
+        self.turn_action_points += 1
+        self.characters.append(character)
+        for skill in character.skills:
+            self.skill_commands[skill] = character.skills[skill]
 
 def recount_events(events):
     if events is not None:
@@ -72,10 +81,11 @@ def recount_events(events):
 
 def main():
     game = Game()
-    soldier = Soldier(game)
-    dog = Dog(game)
-    shrink = Psychiatrist(game)
-    spook = Scientist(game)
+
+    game.add_character(Soldier(game))
+    game.add_character(Dog(game))
+    game.add_character(Psychiatrist(game))
+    game.add_character(Scientist(game))
 
     while True:
         print ("")
@@ -83,10 +93,9 @@ def main():
         print ("Day %d" % game.days)
         print ("============================================")
         for character in game.characters:
-            print ("%s (INS: %d, INF: %s) ['%s']" % (character.name,
-                                              character.insanity,
-                                              character.is_infected,
-                                              character.skill_command))
+            print ("%s (INS: %d, INF: %s) %s" % 
+                (character.name, character.insanity, character.is_infected,
+                [c for c in character.skills]))
         print ("")
         print ("Fire strength: %d" % game.fire)
         print ("Radio repair: %d%%" % game.radio_repair_progress)

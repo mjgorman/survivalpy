@@ -64,6 +64,13 @@ class Game(object):
 
         return events
 
+    def add_character(self, character):
+        self.food_rations += 2
+        self.turn_action_points += 1
+        self.characters.append(character)
+        for skill in character.skills:
+            self.skill_commands[skill] = character.skills[skill]
+
 def recount_events(events):
     if events is not None:
         for e in events:
@@ -74,10 +81,11 @@ def recount_events(events):
 
 def main():
     game = Game()
-    soldier = Soldier(game)
-    dog = Dog(game)
-    shrink = Psychiatrist(game)
-    spook = Scientist(game)
+
+    game.add_character(Soldier(game))
+    game.add_character(Dog(game))
+    game.add_character(Psychiatrist(game))
+    game.add_character(Scientist(game))
 
     while True:
         print ("")
@@ -85,9 +93,9 @@ def main():
         print ("Day %d" % game.days)
         print ("============================================")
         for character in game.characters:
-            print ("%s (INS: %d, INF: %s) ['%s']" % 
+            print ("%s (INS: %d, INF: %s) %s" % 
                 (character.name, character.insanity, character.is_infected,
-                character.skill_command))
+                [c for c in character.skills]))
         print ("")
         print ("Fire strength: %d" % game.fire)
         print ("Radio repair: %d%%" % game.radio_repair_progress)

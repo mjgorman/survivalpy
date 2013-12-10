@@ -110,3 +110,11 @@ class RadioRepairResult(Event):
 
     def __repr__(self):
         return "Radio repaired: %s" % self.result
+
+class BulletsMade(Event):
+    def __init__(self, amount):
+        super(BulletsMade, self).__init__(13, 'bullets made')
+        self.amount = amount
+
+    def __repr__(self):
+        return "Made %d bullets." % self.amount

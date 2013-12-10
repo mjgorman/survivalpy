@@ -118,3 +118,10 @@ class BulletsMade(Event):
 
     def __repr__(self):
         return "Made %d bullets." % self.amount
+
+class TherapyImpossible(Event):
+    def __init__(self):
+        super(TherapyImpossible, self).__init__(14, 'therapy impossible')
+
+    def __repr__(self):
+        return "Therapy not possible. Need all action points."

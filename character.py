@@ -4,7 +4,7 @@ from random import randint
 from util import roll
 from event import (FoodHuntResult, BulletsUsed, VaccinesMade,
     CharacterSoothedResult, CharacterCureResult, CharacterDeath,
-    CharacterInfected, BulletsMade)
+    CharacterInfected, BulletsMade, TherapyImpossible)
 
 class Character(object):
     def __init__(self, name, game):
@@ -109,9 +109,12 @@ class Psychiatrist(Character):
         self.skills['therapy'] = self.therapy
 
     def therapy(self):
-        for i in xrange(self.game.turn_action_points):
-            self.game.characters[i].insanity = 0
-            self.game.turn_action_points -= 1
+        if self.game.turn_action_points == self.game.characters:
+            self.game.turn_action_points = 0
+            for c in self.game.characters:
+                c.insanity = 0
+        else:
+            return (TherapyImpossible(),)
 
 class Scientist(Character):
     def __init__(self, game):

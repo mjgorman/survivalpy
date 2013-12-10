@@ -26,7 +26,7 @@ class Game(object):
         events = []
         self.days -= 1
         if self.days == 0:
-            if self.radio_repair_progress >= 20:
+            if self.radio_repair_progress >= 50:
                 events.append(RadioRepairResult(True))
                 events.append(GameEnd(True))
             else:
